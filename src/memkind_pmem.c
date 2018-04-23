@@ -47,8 +47,8 @@ MEMKIND_EXPORT struct memkind_ops MEMKIND_PMEM_OPS = {
     .get_arena = memkind_thread_get_arena,
 };
 
-void *pmem_extent_alloc(extent_hooks_t *extent_hooks,
-    void *new_addr,
+void *pmem_extent_alloc(
+	void *new_addr,
     size_t size,
     size_t alignment,
     bool *zero,
@@ -88,7 +88,7 @@ exit:
     return addr;
 }
 
-bool pmem_extent_dalloc(extent_hooks_t *extent_hooks,
+bool pmem_extent_dalloc(
     void *addr,
     size_t size,
     bool committed,
@@ -98,7 +98,7 @@ bool pmem_extent_dalloc(extent_hooks_t *extent_hooks,
     return true;
 }
 
-bool pmem_extent_commit(extent_hooks_t *extent_hooks,
+bool pmem_extent_commit(
     void *addr,
     size_t size,
     size_t offset,
@@ -109,7 +109,7 @@ bool pmem_extent_commit(extent_hooks_t *extent_hooks,
     return false;
 }
 
-bool pmem_extent_decommit(extent_hooks_t *extent_hooks,
+bool pmem_extent_decommit(
     void *addr,
     size_t size,
     size_t offset,
@@ -120,7 +120,7 @@ bool pmem_extent_decommit(extent_hooks_t *extent_hooks,
     return true;
 }
 
-bool pmem_extent_purge(extent_hooks_t *extent_hooks,
+bool pmem_extent_purge(
     void *addr,
     size_t size,
     size_t offset,
@@ -131,7 +131,7 @@ bool pmem_extent_purge(extent_hooks_t *extent_hooks,
     return true;
 }
 
-bool pmem_extent_split(extent_hooks_t *extent_hooks,
+bool pmem_extent_split(
     void *addr,
     size_t size,
     size_t size_a,
@@ -143,7 +143,7 @@ bool pmem_extent_split(extent_hooks_t *extent_hooks,
     return false;
 }
 
-bool pmem_extent_merge(extent_hooks_t *extent_hooks,
+bool pmem_extent_merge(
     void *addr_a,
     size_t size_a,
     void *addr_b,
@@ -160,7 +160,7 @@ static extent_hooks_t pmem_extent_hooks = {
     .dalloc = pmem_extent_dalloc,
     .commit = pmem_extent_commit,
     .decommit = pmem_extent_decommit,
-    .purge_lazy = pmem_extent_purge,
+    .purge = pmem_extent_purge,
     .split = pmem_extent_split,
     .merge = pmem_extent_merge
 };

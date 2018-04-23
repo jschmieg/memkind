@@ -163,8 +163,8 @@ static void *alloc_aligned_slow(size_t size, size_t alignment, struct memkind* k
 }
 
 
-void *arena_extent_alloc(extent_hooks_t *extent_hooks,
-    void *new_addr,
+void *arena_extent_alloc(
+	void *new_addr,
     size_t size,
     size_t alignment,
     bool *zero,
@@ -206,7 +206,7 @@ void *arena_extent_alloc(extent_hooks_t *extent_hooks,
     return addr;
 }
 
-void *arena_extent_alloc_hugetlb(extent_hooks_t *extent_hooks,
+void *arena_extent_alloc_hugetlb(
     void *new_addr,
     size_t size,
     size_t alignment,
@@ -216,11 +216,11 @@ void *arena_extent_alloc_hugetlb(extent_hooks_t *extent_hooks,
 {
     //round up to huge page size
     size = (size + (HUGE_PAGE_SIZE - 1)) & ~(HUGE_PAGE_SIZE - 1);
-    return arena_extent_alloc(extent_hooks, new_addr, size, alignment, zero, commit, arena_ind);
+    return arena_extent_alloc(new_addr, size, alignment, zero, commit, arena_ind);
 }
 
-bool arena_extent_dalloc(extent_hooks_t *extent_hooks,
-    void *addr,
+bool arena_extent_dalloc(
+	void *addr,
     size_t size,
     bool committed,
     unsigned arena_ind)
@@ -228,8 +228,8 @@ bool arena_extent_dalloc(extent_hooks_t *extent_hooks,
     return true;
 }
 
-bool arena_extent_commit(extent_hooks_t *extent_hooks,
-    void *addr,
+bool arena_extent_commit(
+	void *addr,
     size_t size,
     size_t offset,
     size_t length,
@@ -238,7 +238,7 @@ bool arena_extent_commit(extent_hooks_t *extent_hooks,
     return false;
 }
 
-bool arena_extent_decommit(extent_hooks_t *extent_hooks,
+bool arena_extent_decommit(
     void *addr,
     size_t size,
     size_t offset,
@@ -248,7 +248,7 @@ bool arena_extent_decommit(extent_hooks_t *extent_hooks,
     return true;
 }
 
-bool arena_extent_purge(extent_hooks_t *extent_hooks,
+bool arena_extent_purge(
     void *addr,
     size_t size,
     size_t offset,
@@ -265,7 +265,7 @@ bool arena_extent_purge(extent_hooks_t *extent_hooks,
     return (err != 0);
 }
 
-bool arena_extent_split(extent_hooks_t *extent_hooks,
+bool arena_extent_split(
     void *addr,
     size_t size,
     size_t size_a,
@@ -276,7 +276,7 @@ bool arena_extent_split(extent_hooks_t *extent_hooks,
     return false;
 }
 
-bool arena_extent_merge(extent_hooks_t *extent_hooks,
+bool arena_extent_merge(
     void *addr_a,
     size_t size_a,
     void *addr_b,
@@ -292,7 +292,7 @@ extent_hooks_t arena_extent_hooks = {
     .dalloc = arena_extent_dalloc,
     .commit = arena_extent_commit,
     .decommit = arena_extent_decommit,
-    .purge_lazy = arena_extent_purge,
+    .purge = arena_extent_purge,
     .split = arena_extent_split,
     .merge = arena_extent_merge
 };
@@ -302,7 +302,7 @@ extent_hooks_t arena_extent_hooks_hugetlb = {
     .dalloc = arena_extent_dalloc,
     .commit = arena_extent_commit,
     .decommit = arena_extent_decommit,
-    .purge_lazy = arena_extent_purge,
+    .purge = arena_extent_purge,
     .split = arena_extent_split,
     .merge = arena_extent_merge
 };
@@ -590,7 +590,7 @@ static void *jemk_mallocx_check(size_t size, int flags)
         errno = ENOMEM;
     }
     else if (size != 0) {
-        result = jemk_mallocx(size, flags);
+        result = (void*)jemk_mallocx(size, flags);
     }
     return result;
 }
@@ -609,7 +609,7 @@ static void *jemk_rallocx_check(void *ptr, size_t size, int flags)
         errno = ENOMEM;
     }
     else {
-        result = jemk_rallocx(ptr, size, flags);
+        result = (void*)jemk_rallocx(ptr, size, flags);
     }
     return result;
 
