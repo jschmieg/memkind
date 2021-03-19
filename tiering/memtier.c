@@ -105,13 +105,15 @@ static memkind_t get_kind(const char *str, const char *pmem_path,
                           size_t pmem_size)
 {
     memkind_t kind = NULL;
+    int err = 0;
     if (strcmp(str, "DRAM") == 0) {
         kind = MEMKIND_DEFAULT;
+        log_debug("kind_name: %s", kind->name);
     } else if (strcmp(str, "FS_DAX") == 0) {
-        // TODO handle FS_DAX here
+        err = memkind_create_pmem(pmem_path, pmem_size, &kind);
+        log_debug("FS DAX creation status: %d", err);
     }
-
-    log_debug("kind_name: %s", kind->name);
+    
     log_debug("pmem_path: %s", pmem_path);
     log_debug("pmem_size: %zu", pmem_size);
 

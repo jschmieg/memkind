@@ -12,7 +12,8 @@ class Helper(object):
     ld_preload_env = "LD_PRELOAD=tiering/.libs/libmemtier.so"
     # TODO create separate, parametrized binary that could be used for testing
     # instead of using ls here
-    bin_path = "ls -l"
+    #bin_path = "ls -l"
+    bin_path = "./a.out"
     cmd = CMD_helper()
 
     log_prefix = "MEMKIND_MEM_TIERING_"
@@ -217,21 +218,22 @@ class Test_tiering_config_env(Helper):
 
     # TODO enable this check after implementing full FS_DAX support in
     # libmemtier
-    """
-    @pytest.mark.parametrize("pmem_size", ["0", "1", "18446744073709551615"])
+    
+    @pytest.mark.parametrize("pmem_size", ["0", "1073741824", "18446744073709551615"])
     def test_FSDAX(self, pmem_size):
         output = self.get_ld_preload_cmd_output(
-            "MEMKIND_MEM_TIERING_CONFIG=FS_DAX:/tmp/:" + pmem_size + ":1", log_level="2")
-
-        assert self.log_debug_prefix + "kind_name: FS_DAX" in output, \
-            "Wrong message"
+            "MEMKIND_MEM_TIERING_CONFIG=FS_DAX:/tmp/:" + pmem_size + ":1," + self.default_policy,
+            log_level="2")
+        #print(output)
+        #assert self.log_debug_prefix + "kind_name: FS_DAX" in output, \
+        #    "Wrong message"
         assert self.log_debug_prefix + "pmem_path: /tmp/" in output, \
             "Wrong message"
         assert self.log_debug_prefix + "pmem_size: " + pmem_size in output, \
             "Wrong message"
         assert self.log_debug_prefix + "ratio_value: 1" in output, \
             "Wrong message"
-
+    """
     @pytest.mark.parametrize("pmem_size", ["1073741824", "1048576K", "1024M", "1G"])
     def test_FSDAX_pmem_size_with_suffix(self, pmem_size):
         output = self.get_ld_preload_cmd_output(
